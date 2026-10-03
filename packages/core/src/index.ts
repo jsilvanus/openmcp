@@ -1,13 +1,26 @@
+export {
+  catalogueOperations,
+  loadOpenApiDocument,
+  resolveSchema,
+} from "./openapi.js";
+
+export type {
+  HttpMethod,
+  JsonSchema,
+  OpenApiDocument,
+  OpenApiOperation,
+  OpenApiParameter,
+  OperationDefinition,
+} from "./openapi.js";
+
+export { executeOperation } from "./executor.js";
+export type { ExecuteResult } from "./executor.js";
+
 export interface ApiConnection {
   id: string;
   openApiUrl: string;
-}
-
-export interface OperationDefinition {
-  name: string;
-  method: string;
-  path: string;
-  description?: string;
+  document: OpenApiDocument;
+  operations: OperationDefinition[];
 }
 
 export class ConnectionRegistry {
@@ -15,6 +28,10 @@ export class ConnectionRegistry {
 
   add(connection: ApiConnection): void {
     this.connections.set(connection.id, connection);
+  }
+
+  get(id: string): ApiConnection | undefined {
+    return this.connections.get(id);
   }
 
   list(): ApiConnection[] {
