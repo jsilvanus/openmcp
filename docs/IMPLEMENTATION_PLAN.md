@@ -59,7 +59,7 @@ Implement the core purpose of OpenMCP without generating/deploying a new server 
 - dynamic MCP tool registration
 - API response/error mapping
 
-Success: an OpenAPI URL produces usable MCP tools without source generation.
+Success: an OpenAPI URL produces usable MCP tools without source generation. **Implemented:** runtime OpenAPI 3.0/3.1 loading, GET/POST operation cataloguing, deterministic tool names, parameter/body schema conversion, generic HTTP execution, and dynamic MCP registration. Authentication, SSRF policy, refresh/replacement, and broader HTTP methods remain later steps.
 
 ## 4. Authentication + security policy
 
