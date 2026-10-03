@@ -32,6 +32,18 @@ Make OpenMCP a useful local MCP server for desktop agents.
 
 STDIO must not open a network listener. The desktop MCP client launches OpenMCP and communicates over stdin/stdout. This is a deliberate security boundary, not merely an MVP convenience.
 
+## STDIO milestone acceptance
+
+Before moving to runtime OpenAPI generation, the STDIO transport should satisfy:
+
+- starts as a child process of an MCP client
+- communicates exclusively through stdin/stdout for MCP traffic
+- sends diagnostics only to stderr
+- does not bind a TCP/HTTP listener
+- exits non-zero on startup failure
+- can be inspected with the MCP Inspector
+- keeps the MCP server factory in the shared `mcp` package
+
 ## 3. Runtime OpenAPI → MCP engine
 
 Implement the core purpose of OpenMCP without generating/deploying a new server per API.
