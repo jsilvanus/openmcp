@@ -1,0 +1,17 @@
+{
+  "name": "openmcp",
+  "private": true,
+  "type": "module",
+  "workspaces": ["packages/*"],
+  "scripts": {
+    "build": "tsc -b",
+    "typecheck": "tsc -b --pretty false",
+    "dev:stdio": "tsx packages/stdio/src/index.ts",
+    "inspect:stdio": "npx @modelcontextprotocol/inspector tsx packages/stdio/src/index.ts"
+  },
+  "devDependencies": {
+    "@types/node": "^24.0.0",
+    "tsx": "^4.20.0",
+    "typescript": "^6.0.0"
+  }
+}
