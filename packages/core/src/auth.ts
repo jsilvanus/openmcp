@@ -214,7 +214,9 @@ export class AuthManager {
       accessToken: token.access_token,
       refreshToken: token.refresh_token,
       tokenType: token.token_type,
-      expiresAt: token.expires_in ? Date.now() + token.expires_in * 1000 : undefined,
+      expiresAt: token.expires_in !== undefined ? Date.now() + token.expires_in * 1000 : undefined,
+      clientId: pending.clientId,
+      tokenUrl: pending.tokenUrl,
     });
     this.pending.delete(state);
   }
@@ -257,9 +259,15 @@ export class AuthManager {
 
   async authorizationHeaders(connectionId: string): Promise<Headers> {
     const headers = new Headers();
-    const credential = await this.store.get(connectionId);
+    let credential = await this.store.get(connectionId);
     if (!credential) return headers;
     if (credential.type === "oauth2") {
+      if (credential.expiresAt !== undefined && credential.expiresAt <= Date.now() + 60_000) {
+        await this.refresh(connectionId);
+        credential = await this.store.get(connectionId);
+        if (!credential) return headers;
+      }
+      if (credential.type !== "oauth2") return headers;
       headers.set("authorization", `${credential.tokenType ?? "Bearer"} ${credential.accessToken}`);
     } else if (credential.location === "header") {
       headers.set(credential.name, credential.value);
