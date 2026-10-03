@@ -63,6 +63,8 @@ Success: an OpenAPI URL produces usable MCP tools without source generation. **I
 
 ## 4. Authentication + security policy
 
+**Initial STDIO credential implementation:** OpenMCP now keeps exactly two permanent control tools: one for loading an OpenAPI contract and creating runtime API tools, and one for the credential lifecycle. STDIO credentials are stored in an encrypted `~/.openmcp/credentials.json.enc` file with a local 32-byte key in `~/.openmcp/master.key` (both mode 0600). The credential tool supports API-key login, OAuth2 authorization-code + PKCE start/completion, status, and logout. Target API tools consume stored credentials without exposing them in their own input schemas.
+
 Add the security model for arbitrary APIs.
 
 - API-key authentication
