@@ -5,5 +5,8 @@
   "type": "module",
   "exports": {
     ".": "./dist/index.js"
+  },
+  "dependencies": {
+    "yaml": "^2.8.1"
   }
 }
