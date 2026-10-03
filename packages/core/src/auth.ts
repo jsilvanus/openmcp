@@ -11,7 +11,7 @@ import type { OpenApiDocument } from "./openapi.js";
 
 export type Credential =
   | { type: "apiKey"; value: string; location: "header" | "query"; name: string }
-  | { type: "oauth2"; accessToken: string; refreshToken?: string; expiresAt?: number; tokenType?: string };
+  | { type: "oauth2"; accessToken: string; refreshToken?: string; expiresAt?: number; tokenType?: string; clientId?: string; tokenUrl?: string };
 
 interface StoredCredentials {
   version: 1;
