@@ -2,12 +2,16 @@
   "name": "openmcp",
   "private": true,
   "type": "module",
-  "workspaces": ["packages/*"],
+  "workspaces": [
+    "packages/*"
+  ],
   "scripts": {
     "build": "tsc -b",
     "typecheck": "tsc -b --pretty false",
     "dev:stdio": "tsx packages/stdio/src/index.ts",
-    "inspect:stdio": "npx @modelcontextprotocol/inspector tsx packages/stdio/src/index.ts"
+    "inspect:stdio": "npx @modelcontextprotocol/inspector tsx packages/stdio/src/index.ts",
+    "start:stdio": "node packages/stdio/dist/index.js",
+    "check:stdio": "tsc -p packages/stdio/tsconfig.json --pretty false"
   },
   "devDependencies": {
     "@types/node": "^24.0.0",
