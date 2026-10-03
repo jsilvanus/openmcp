@@ -49,6 +49,7 @@ export interface OpenApiDocument {
   paths: Record<string, Record<string, OpenApiOperation | Record<string, unknown>>>;
   components?: {
     schemas?: Record<string, JsonSchema>;
+    securitySchemes?: Record<string, unknown>;
   };
 }
 
