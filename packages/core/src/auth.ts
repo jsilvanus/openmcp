@@ -219,6 +219,42 @@ export class AuthManager {
     this.pending.delete(state);
   }
 
+  async refresh(connectionId: string): Promise<boolean> {
+    const credential = await this.store.get(connectionId);
+    if (!credential?.refreshToken || !credential.clientId || !credential.tokenUrl) return false;
+
+    const response = await fetch(credential.tokenUrl, {
+      method: "POST",
+      headers: { "content-type": "application/x-www-form-urlencoded", accept: "application/json" },
+      body: new URLSearchParams({
+        grant_type: "refresh_token",
+        refresh_token: credential.refreshToken,
+        client_id: credential.clientId,
+      }),
+      signal: AbortSignal.timeout(15_000),
+    });
+    if (!response.ok) throw new Error(`OAuth token refresh failed: HTTP ${response.status}`);
+
+    const token = await response.json() as {
+      access_token?: string;
+      refresh_token?: string;
+      token_type?: string;
+      expires_in?: number;
+    };
+    if (!token.access_token) throw new Error("OAuth refresh response did not contain an access_token.");
+
+    await this.store.set(connectionId, {
+      type: "oauth2",
+      accessToken: token.access_token,
+      refreshToken: token.refresh_token ?? credential.refreshToken,
+      tokenType: token.token_type ?? credential.tokenType,
+      expiresAt: token.expires_in !== undefined ? Date.now() + token.expires_in * 1000 : credential.expiresAt,
+      clientId: credential.clientId,
+      tokenUrl: credential.tokenUrl,
+    });
+    return true;
+  }
+
   async authorizationHeaders(connectionId: string): Promise<Headers> {
     const headers = new Headers();
     const credential = await this.store.get(connectionId);
