@@ -1,4 +1,5 @@
 import type { OpenApiDocument, OperationDefinition, OpenApiParameter } from "./openapi.js";
+import { AuthManager } from "./auth.js";
 import { resolveSchema } from "./openapi.js";
 
 export interface ExecuteResult {
@@ -11,6 +12,8 @@ export async function executeOperation(
   operation: OperationDefinition,
   args: Record<string, unknown>,
   document: OpenApiDocument,
+  connectionId?: string,
+  auth = new AuthManager(),
 ): Promise<ExecuteResult> {
   let url = joinUrl(operation.baseUrl, operation.path);
 
@@ -44,6 +47,12 @@ export async function executeOperation(
         headers.set(parameter.name, String(value));
         break;
     }
+  }
+
+  if (connectionId) {
+    const authHeaders = await auth.authorizationHeaders(connectionId);
+    authHeaders.forEach((value, key) => headers.set(key, value));
+    await auth.applyQueryCredential(connectionId, query);
   }
 
   const requestBody = operation.requestBody;
